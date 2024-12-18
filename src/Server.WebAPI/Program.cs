@@ -2,7 +2,6 @@ using Newtonsoft.Json;
 using Server.Application;
 using Server.Infrastructure;
 using Server.Presentation;
-using Server.WebAPI;
 using Server.WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,9 +67,9 @@ app.UseAuthorization();
 
 app.MapControllers().RequireAuthorization();
 
-if (builder.Environment.IsDevelopment())
-{
-    Helper.GenerateData(app).Wait();
-}
+//if (builder.Environment.IsDevelopment())
+//{
+//    Helper.GenerateData(app).Wait();
+//}
 
 app.Run();
