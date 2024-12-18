@@ -1,0 +1,38 @@
+name: Deploy to Windows Hosting via FTP
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ./Server.sln
+
+    - name: Build
+      run: dotnet build ./Server.sln --configuration Release
+
+    - name: Publish
+      run: dotnet publish Presentation/Server.WebAPI/Server.WebAPI.csproj --configuration Release --no-build --output './publish'
+
+    - name: Deploy to FTP Server
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        server: ftp.aheroglu.dev
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./publish/
+        server-dir: ng-commerce-api.aheroglu.dev/
+        method: sync
