@@ -9,7 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder
     .Services
-    .AddCors();
+    .AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+    });
 
 builder
     .Services
@@ -46,13 +54,13 @@ app.UseSwagger();
 
 app.UseSwaggerUI();
 
+app.UseCors("AllowAll");
+
 app.UseMiddleware<ExceptionHandler>();
 
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
-
-app.UseCors(x => x.AllowAnyHeader().SetIsOriginAllowed(p => true).AllowAnyMethod().AllowCredentials());
 
 app.UseAuthentication();
 
